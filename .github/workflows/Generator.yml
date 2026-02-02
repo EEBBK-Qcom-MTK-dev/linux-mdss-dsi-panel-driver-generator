@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       fdt_filename:
-        description: 'FDT源文件名 (.dts 或 .dtsi, 留空跳过)'
+        description: 'FDT BLOB文件名 (留空跳过)'
         required: false
         type: string
       dtimg_filename:
