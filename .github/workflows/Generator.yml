@@ -78,7 +78,7 @@ jobs:
       run: |
         mkdir -p generated-output
         # 收集所有生成的文件
-        cp -r ./ generated-output/
+        cp -r . generated-output/
         ls -la generated-output/
 
     - name: Create archive
