@@ -1,4 +1,4 @@
-# 本仓库添加了github action工作流，[点击查看详情](https://github.com/XiKoTaSu/linux-mdss-dsi-panel-driver-generator)
+# 本仓库添加了github action工作流，[使用指南](https://github.com/EEBBK-Qcom-MTK-dev/linux-mdss-dsi-panel-driver-generator/blob/master/README-WORKFLOWS.md)
 # linux-mdss-dsi-panel-driver-generator (lmdpdg)
 The downstream kernel for Qualcomm-based Android devices describes panel
 properties and initialization sequences in the device tree.  
