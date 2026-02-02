@@ -73,17 +73,10 @@ jobs:
         # 使用项目的主脚本生成驱动
         python lmdpdg.py "$INPUT_FILE"
         echo "驱动生成完成"
-
-    - name: Create output structure
-      run: |
-        mkdir -p generated-output
-        # 收集所有生成的文件
-        cp -r . generated-output/
-        ls -la generated-output/
-
+        
     - name: Create archive
       run: |
-        tar -czf panel-driver-${{ github.run_id }}-${{ github.sha }}.tar.gz generated-output/
+        tar -czf panel-driver-${{ github.run_id }}-${{ github.sha }}.tar.gz .
 
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
