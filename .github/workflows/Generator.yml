@@ -1,0 +1,117 @@
+name: Panel Driver Generator CI
+
+on:
+  workflow_dispatch:
+    inputs:
+      fdt_filename:
+        description: 'FDT源文件名 (.dts 或 .dtsi, 留空跳过)'
+        required: false
+        type: string
+      dtimg_filename:
+        description: 'DT.IMG镜像文件名 (留空跳过)'
+        required: false
+        type: string
+      release_tag:
+        description: '发布版本标签'
+        required: true
+        type: string
+        default: 'v1.0.0'
+
+env:
+  FDT_FILENAME: ${{ inputs.fdt_filename }}
+  DTIMG_FILENAME: ${{ inputs.dtimg_filename }}
+
+jobs:
+  generate-driver:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y device-tree-compiler python3-pip python3-dev
+
+    - name: Install Python dependencies
+      run: |
+        pip install pyfdt pylibfdt
+
+    - name: Extract DT.IMG if provided and condition is true
+      if: inputs.dtimg_filename != '' && inputs.dtimg_filename != 'false'
+      run: |
+        echo "处理DT.IMG文件: $DTIMG_FILENAME"
+        # 使用项目自带的unpackqcdt.py工具分解dt.img
+        if [ -f "$DTIMG_FILENAME" ]; then
+          python tools/unpackqcdt.py "$DTIMG_FILENAME"
+          echo "DT.IMG分解完成"
+        else
+          echo "错误: 文件 $DTIMG_FILENAME 不存在"
+          exit 1
+        fi
+
+    - name: Process FDT file if provided and condition is true
+      if: inputs.fdt_filename != '' && inputs.fdt_filename != 'false'
+      run: |
+        echo "处理FDT文件: $FDT_FILENAME"
+        # 编译dts为dtb（如果需要）
+        if [[ "$FDT_FILENAME" == *.dts ]] || [[ "$FDT_FILENAME" == *.dtsi ]]; then
+          dtc -O dtb -o compiled.dtb "$FDT_FILENAME"
+          INPUT_FILE="compiled.dtb"
+        else
+          INPUT_FILE="$FDT_FILENAME"
+        fi
+        
+        # 使用项目的主脚本生成驱动
+        python lmdpdg.py "$INPUT_FILE"
+        echo "驱动生成完成"
+
+    - name: Create output structure
+      run: |
+        mkdir -p generated-output
+        # 收集所有生成的文件
+        cp -r *.c *.h *.dtsi *.dts Makefile Kconfig generated-output/ 2>/dev/null || true
+        ls -la generated-output/
+
+    - name: Create archive
+      run: |
+        tar -czf panel-driver-${{ github.run_id }}-${{ github.sha }}.tar.gz generated-output/
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: generated-panel-driver
+        path: |
+          panel-driver-*.tar.gz
+          generated-output/
+
+  create-release:
+    needs: generate-driver
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+    - name: Download artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: generated-panel-driver
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: ${{ inputs.release_tag }}
+        release_name: "Generated Panel Driver ${{ inputs.release_tag }}"
+        files: |
+          panel-driver-*.tar.gz
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
