@@ -76,7 +76,7 @@ jobs:
         
     - name: Create archive
       run: |
-        tar -czf panel-driver-${{ github.run_id }}-${{ github.sha }}.tar.gz . 2>/dev/null || true
+        tar -czf panel-driver-${{ inputs.dtimg_filename }}-${{ inputs.fdt_filename }}-${{ github.run_id }}-${{ github.sha }}.tar.gz . 2>/dev/null || true
         
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
