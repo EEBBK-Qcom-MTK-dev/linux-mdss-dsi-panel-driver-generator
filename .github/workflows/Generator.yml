@@ -51,7 +51,7 @@ jobs:
         echo "处理DT.IMG文件: $DTIMG_FILENAME"
         # 使用项目自带的unpackqcdt.py工具分解dt.img
         if [ -f "$DTIMG_FILENAME" ]; then
-          python tools/unpackqcdt.py "$DTIMG_FILENAME"
+          python tools/unpackqcdt.py input/"$DTIMG_FILENAME"
           echo "DT.IMG分解完成"
         else
           echo "错误: 文件 $DTIMG_FILENAME 不存在"
@@ -71,7 +71,7 @@ jobs:
         fi
         
         # 使用项目的主脚本生成驱动
-        python lmdpdg.py "$INPUT_FILE"
+        python lmdpdg.py input/"$INPUT_FILE"
         echo "驱动生成完成"
         
     - name: Create archive
