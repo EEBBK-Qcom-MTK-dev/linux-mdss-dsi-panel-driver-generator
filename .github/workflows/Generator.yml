@@ -64,7 +64,7 @@ jobs:
         echo "处理FDT文件: $FDT_FILENAME"
         # 编译dts为dtb（如果需要）
         if [[ "$FDT_FILENAME" == *.dts ]] || [[ "$FDT_FILENAME" == *.dtsi ]]; then
-          dtc -I dts -O dtb -o compiled.dtb input/"$FDT_FILENAME"
+          dtc -I dts -O dtb -o input/compiled.dtb input/"$FDT_FILENAME"
           INPUT_FILE="compiled.dtb"
         else
           INPUT_FILE="$FDT_FILENAME"
