@@ -76,7 +76,7 @@ jobs:
 
     - name: Process FDT file
       run: |
-        python lmdpdg.py input/"$INPUT_FILE" -r vdda -r vdd
+        python lmdpdg.py input/${{ inputs.fdt_filename }} -r vdda -r vdd
     
     - name: Create archive
       run: |
