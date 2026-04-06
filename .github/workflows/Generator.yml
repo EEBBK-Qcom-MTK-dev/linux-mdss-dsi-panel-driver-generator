@@ -72,6 +72,7 @@ jobs:
         
         # 使用项目的主脚本生成驱动
         python lmdpdg.py "$INPUT_FILE" -r vdda -r vdd
+        python lmdpdg.py input/"$INPUT_FILE" -r vdda -r vdd
         echo "驱动生成完成"
       continue-on-error: true
       
