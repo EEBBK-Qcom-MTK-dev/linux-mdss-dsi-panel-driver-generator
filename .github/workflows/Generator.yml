@@ -72,10 +72,12 @@ jobs:
         
         # 使用项目的主脚本生成驱动
         python lmdpdg.py "$INPUT_FILE" -r vdda -r vdd
-        python lmdpdg.py input/"$INPUT_FILE" -r vdda -r vdd
-        echo "驱动生成完成"
       continue-on-error: true
-      
+
+    - name: Process FDT file
+      run: |
+        python lmdpdg.py input/"$INPUT_FILE" -r vdda -r vdd
+    
     - name: Create archive
       run: |
         tar -czf panel-driver-${{ inputs.dtimg_filename }}-${{ inputs.fdt_filename }}-${{ github.run_id }}-${{ github.sha }}.tar.gz . 2>/dev/null || true
