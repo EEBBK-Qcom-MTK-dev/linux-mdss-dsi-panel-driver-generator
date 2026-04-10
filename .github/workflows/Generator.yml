@@ -71,7 +71,7 @@ jobs:
         fi
         
         # 使用项目的主脚本生成驱动
-        python lmdpdg.py "$INPUT_FILE" -r vdda -r vdd
+        python lmdpdg.py "$INPUT_FILE"
       continue-on-error: true
 
     - name: Process FDT file
