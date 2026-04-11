@@ -77,6 +77,7 @@ jobs:
     - name: Process FDT file
       run: |
         python lmdpdg.py input/${{ inputs.fdt_filename }}
+      continue-on-error: true
     
     - name: Create archive
       run: |
