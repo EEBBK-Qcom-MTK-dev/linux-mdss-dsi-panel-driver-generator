@@ -81,6 +81,7 @@ jobs:
     
     - name: Create archive
       run: |
+        rm -rf input
         tar -czf panel-driver-${{ inputs.dtimg_filename }}-${{ inputs.fdt_filename }}-${{ github.run_id }}-${{ github.sha }}.tar.gz . 2>/dev/null || true
         
     - name: Upload build artifacts
