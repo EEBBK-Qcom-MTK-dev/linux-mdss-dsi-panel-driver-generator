@@ -71,12 +71,12 @@ jobs:
         fi
         
         # 使用项目的主脚本生成驱动
-        python lmdpdg.py "$INPUT_FILE" -r vddio -r vddneg -r vddpos
+        python lmdpdg.py "$INPUT_FILE"
       continue-on-error: true
 
     - name: Process FDT file
       run: |
-        python lmdpdg.py input/${{ inputs.fdt_filename }}
+        python lmdpdg.py input/${{ inputs.fdt_filename }} -r vddio -r vddneg -r vddpos
       continue-on-error: true
     
     - name: Create archive
