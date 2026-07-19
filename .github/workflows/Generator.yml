@@ -16,6 +16,11 @@ on:
         required: true
         type: string
         default: 'v1.0.0'
+      flags:
+        description: "要添加的额外生成参数"
+        required: false
+        type: string
+        default: "-r vdd3p3 -r vddio -r vsn -r vsp"
 
 env:
   FDT_FILENAME: ${{ inputs.fdt_filename }}
@@ -71,12 +76,12 @@ jobs:
         fi
         
         # 使用项目的主脚本生成驱动
-        python lmdpdg.py "$INPUT_FILE" -r vdd3p3 -r vddio -r vsn -r vsp
+        python lmdpdg.py "$INPUT_FILE" ${{ inputs.flags }}
       continue-on-error: true
 
     - name: Process FDT file
       run: |
-        python lmdpdg.py input/${{ inputs.fdt_filename }}
+        python lmdpdg.py input/${{ inputs.fdt_filename }} ${{ inputs.flags }}
       continue-on-error: true
     
     - name: Create archive
